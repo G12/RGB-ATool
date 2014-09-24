@@ -8,7 +8,7 @@ import android.graphics.Color;
  * The model holds the data.
  *
  * Model color.
- * Based on red, green, blud and alpha (transparency).
+ * Based on red, green, blue and alpha (transparency).
  *
  * RGB: integer values in the domain range of 0 to 255 (inclusive).
  * Alpha: integer value in the domain range of 0 to 255 (inclusive).
@@ -38,80 +38,101 @@ public class RGBAModel extends Observable {
 	private Integer blue;
 	
 	/**
-	 * 
+	 * Default Constructor
+	 * @throws Exception
 	 */
-	public RGBAModel() {
+	public RGBAModel() throws Exception{
 		this( MAX_RGB, MAX_RGB, MAX_RGB, MAX_ALPHA );
 	}
 	
 	/**
 	 * Class constructor specifying RGB and alpha values.
+	 * Note I added simple range checking in the constructor to
+	 * test out how java throws and handles Exceptions
 	 * @param red
 	 * @param green
 	 * @param blue
 	 * @param alpha
+	 * @throws Exception
 	 */
-	public RGBAModel( Integer red, Integer green, Integer blue, Integer alpha)
+	public RGBAModel( Integer red, Integer green, Integer blue, Integer alpha) throws Exception
 	{
 	    super();
-
-	    this.red = red;
-	    this.green = green;
-	    this.blue = blue;
-	    this.alpha = alpha;
+	    this.red = checkRange(MIN_RGB, MAX_RGB,red);
+	    this.green = checkRange(MIN_RGB, MAX_RGB,green);
+	    this.blue = checkRange(MIN_RGB, MAX_RGB, blue);
+	    this.alpha = checkRange(MIN_ALPHA, MAX_ALPHA, alpha);
 	}
 	
 	/**
-	 * 
+	 * This method checks the range of a value and throws an Exception
+	 * if the value does not fall within the specified range.
+	 * @param min
+	 * @param max
+	 * @param value
+	 * @return The value that was range checked.
+	 * @throws Exception
+	 */
+	private Integer checkRange(Integer min, Integer max, Integer value) throws Exception
+	{
+		if(value > max || value < min)
+		{
+			throw new Exception("ERROR Input value of " + value + " is out of range, must be between " + min + " and " + max + ".");
+		}
+		return value;
+	}
+	
+	/**
+	 * Called by black menu item
 	 */
 	public void asBlack() {
 	    this.setRGB( MIN_RGB, MIN_RGB, MIN_RGB );
 	}
 
 	/**
-	 * 
+	 * Called by blue menu item
 	 */
 	public void asBlue() {
 	    this.setRGB( MIN_RGB, MIN_RGB, MAX_RGB );
 	}
 	
 	/**
-	 * 
+	 * Called by cyan menu item
 	 */
 	public void asCyan() {
 	    this.setRGB( MIN_RGB, MAX_RGB, MAX_RGB );
 	}
 
 	/**
-	 * 
+	 * Called by green menu item
 	 */
 	public void asGreen() {
 	    this.setRGB( MIN_RGB, MAX_RGB, MIN_RGB );
 	}
 
 	/**
-	 * 
+	 * Called by magenta menu item
 	 */
 	public void asMagenta() {
 	    this.setRGB( MAX_RGB, MIN_RGB, MAX_RGB );
 	}
 
 	/**
-	 * 
+	 * Called by red menu item
 	 */
 	public void asRed() {
 	    this.setRGB( MAX_RGB, MIN_RGB, MIN_RGB );
 	}
 
 	/**
-	 * 
+	 * Called by white menu item
 	 */
 	public void asWhite() {
 	    this.setRGB( MAX_RGB, MAX_RGB, MAX_RGB );
 	}
 
 	/**
-	 * 
+	 * Called by yellow menu item
 	 */
 	public void asYellow() {
 	    this.setRGB( MAX_RGB, MAX_RGB, MIN_RGB );
@@ -128,10 +149,6 @@ public class RGBAModel extends Observable {
 	 * @param alpha the alpha to set
 	 */
 	public void setAlpha(Integer alpha) {
-		if(alpha > MAX_ALPHA || alpha < MIN_ALPHA)
-		{
-			//throw new 
-		}
 		this.alpha = alpha;
 		//The models state has changed
 		this.updateObservers();
@@ -186,7 +203,7 @@ public class RGBAModel extends Observable {
 	}
 
 	/**
-	 * @return
+	 * @return color int
 	 */
 	public int getColor() {
 	    return Color.rgb( red, green, blue );
@@ -226,11 +243,19 @@ public class RGBAModel extends Observable {
 	}
 
 	/**
+	 * Note I added Exception handling as a test
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		RGBAModel model = new RGBAModel( 127, 127, 127, 255 );
-		System.out.println(model);
+		try
+		{
+			RGBAModel model = new RGBAModel( 127, 127, 127, 255 );
+			System.out.println(model);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
 	}
 
 }
